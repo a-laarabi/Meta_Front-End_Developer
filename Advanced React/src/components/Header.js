@@ -12,15 +12,15 @@ import { Box, HStack } from "@chakra-ui/react";
 const socials = [
   {
     icon: faEnvelope,
-    url: "mailto: hello@example.com",
+    url: "mailto: contact.laarabi@gmail.com",
   },
   {
     icon: faGithub,
-    url: "https://github.com",
+    url: "https://github.com/a-laarabi",
   },
   {
     icon: faLinkedin,
-    url: "https://www.linkedin.com",
+    url: "https://www.linkedin.com/in/a-laarabi/",
   },
   {
     icon: faMedium,
@@ -30,31 +30,34 @@ const socials = [
     icon: faStackOverflow,
     url: "https://stackoverflow.com",
   },
-];
+ ];
 
-const Header = () => {
+ const Header = () => {
   const headerRef = useRef(null);
-  let lastScrollPosition = 0;
-
-  const handleScroll = () => {
-    const currentScrollPosition = window.pageYOffset;
-    if (currentScrollPosition < lastScrollPosition) {
-      // scrolling up
-      headerRef.current.style.transform = 'translateY(0)';
-    } else {
-      // scrolling down
-      headerRef.current.style.transform = 'translateY(-200px)';
-    }
-    lastScrollPosition = currentScrollPosition;
-  };
 
   useEffect(() => {
-    window.addEventListener('scroll', handleScroll);
+    let prevScrollPos = window.scrollY;
+
+    const handleScroll = () => {
+      const currentScrollPos = window.scrollY;
+      const headerElement = headerRef.current;
+      if (!headerElement) {
+        return;
+      }
+      if (prevScrollPos > currentScrollPos) {
+        headerElement.style.transform = "translateY(0)";
+      } else {
+        headerElement.style.transform = "translateY(-200px)";
+      }
+      prevScrollPos = currentScrollPos;
+    }
+    window.addEventListener('scroll', handleScroll)
+
     return () => {
-      window.removeEventListener('scroll', handleScroll);
-    };
+      window.removeEventListener('scroll', handleScroll)
+    }
   }, []);
-  
+
   const handleClick = (anchor) => () => {
     const id = `${anchor}-section`;
     const element = document.getElementById(id);
@@ -65,10 +68,8 @@ const Header = () => {
       });
     }
   };
-
   return (
     <Box
-      ref={headerRef}
       position="fixed"
       top={0}
       left={0}
@@ -78,6 +79,7 @@ const Header = () => {
       transitionDuration=".3s"
       transitionTimingFunction="ease-in-out"
       backgroundColor="#18181b"
+      ref={headerRef}
     >
       <Box color="white" maxWidth="1280px" margin="0 auto">
         <HStack
@@ -87,25 +89,33 @@ const Header = () => {
           alignItems="center"
         >
           <nav>
-            {/* Add social media links based on the `socials` data */}
-              <HStack spacing={8}>
-                {socials.map((social) => (
-                  <a key={social.url} href={social.url}>
-                      <FontAwesomeIcon icon={social.icon} size="2x" />
-                  </a>
-                ))}
-              </HStack>
+            <HStack spacing={8}>
+              {socials.map(({ icon, url }) => (
+                <a
+                  key={url}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  <FontAwesomeIcon icon={icon} size="2x" key={url} />
+                </a>
+              ))}
+            </HStack>
           </nav>
           <nav>
             <HStack spacing={8}>
-              {/* Add links to Projects and Contact me section */}
-              <a href="/#projects" onClick={handleClick('projects')}>Projects</a>
-              <a href="/#contact-me" onClick={handleClick('contactme')}>Contact Me</a>  
+              <a href="#projects" onClick={handleClick("projects")}>
+                Projects
+              </a>
+              <a href="#contactme" onClick={handleClick("contactme")}>
+                Contact Me
+              </a>
             </HStack>
           </nav>
         </HStack>
       </Box>
     </Box>
   );
-};
+ };
+
 export default Header;
